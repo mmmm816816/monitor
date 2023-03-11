@@ -9,6 +9,8 @@ cocoSsd.load().then(function (loadedModel) {
 
 const video = document.getElementById('webcam');
 const liveView = document.getElementById('liveView');
+// const cvs = document.getElementById('cvs');
+const cnt = document.getElementById('cnt');
 
 function hasGetUserMedia() {
     return !!(navigator.mediaDevices &&
@@ -33,17 +35,22 @@ function enableCam(event) {
     event.target.classList.add('removed');
 
     // const constraints = {
+    //     audio: true
     //     video: true
     // };
 
     const constraints = {
         video: {
+            width: 1280, // 1920,
+            height: 720, // 1080,
             frameRate: {
                 ideal: 4, // 15
                 max: 30
             }
         }
     };
+
+    document.getElementById('percent').style.paddingTop = constraints.video.height + 100 + "px"
 
     navigator.mediaDevices.getUserMedia(constraints).then(function (stream) {
         video.srcObject = stream;
@@ -69,6 +76,7 @@ function predictWebcam() {
         children.push(pp);
         num_obj = 0
         cnt.innerText = ''
+        // cvs.innerText = ''
 
         for (let n = 0; n < predictions.length; n++) {
             if (predictions[n].score > 0.60 && predictions[n].class == 'tv') { // 'person' 'tv' // https://tech.amikelive.com/node-718/what-object-categories-labels-are-in-coco-dataset/
@@ -100,26 +108,37 @@ function predictWebcam() {
                 // cnt.innerText = ''
             }
         }
-
         window.requestAnimationFrame(predictWebcam);
     });
 }
-
-let cnt = document.getElementById('cnt');
 
 function displayCanvas(prediction, num_obj) {
     let canvas = document.createElement("canvas");
     // let canvas = document.getElementById("c");
     canvas.width = Math.floor(prediction.bbox[2]);
     canvas.height = Math.floor(prediction.bbox[3]);
-    let ctx = canvas.getContext("2d", { willReadFrequently: true }); // Canvas2D: Multiple readback operations using getImageData are faster with the willReadFrequently attribute set to true warnings
+    let ctx = canvas.getContext(
+        "2d", 
+        { 
+            willReadFrequently: true 
+        }
+    ); // Canvas2D: Multiple readback operations using getImageData are faster with the willReadFrequently attribute set to true warnings
     ctx.drawImage(
         video,
-        Math.floor(prediction.bbox[0]),
-        Math.floor(prediction.bbox[1]),
-        Math.floor(prediction.bbox[2]),
-        Math.floor(prediction.bbox[3])
+        Math.floor(prediction.bbox[0]), // sx
+        Math.floor(prediction.bbox[1]), // sy
+        Math.floor(prediction.bbox[2]), // sWidth
+        Math.floor(prediction.bbox[3]), // sHeight
+        0, // dx
+        0, // dy
+        Math.floor(prediction.bbox[2]), // dWidth
+        Math.floor(prediction.bbox[3]), // dHeight
     );
+    /*
+    drawImage(image, dx, dy)
+    drawImage(image, dx, dy, dWidth, dHeight)
+    drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight)
+    */
     let frame = ctx.getImageData(
         0,
         0,
@@ -138,6 +157,7 @@ function displayCanvas(prediction, num_obj) {
             num -= 1;
         }
     }
-    //ctx.putImageData(frame, 0, 0);
+    // ctx.putImageData(frame, 0, 0);
+    // cvs.append(canvas);
     cnt.innerText += '\n' + num_obj + '\n' + (num) + '/' + l + '(' + Math.round((num)/l*1000)/10 +' %)';
 }
