@@ -66,11 +66,35 @@
      margin: 0;
  }
 
+ .videoView p.on,
+ .classifyOnClick p.off {
+     position: absolute;
+     padding: 5px;
+     background-color: rgba(255, 111, 0, 0.85);
+     color: #FFF;
+     border: 1px dashed rgba(255, 255, 255, 0.7);
+     z-index: 2;
+     font-size: 12px;
+     margin: 0;
+ }
+
+ .videoView p.off,
+ .classifyOnClick p.off {
+     position: absolute;
+     padding: 5px;
+     background-color: rgba(0, 111, 255, 0.85);
+     color: #FFF;
+     border: 1px dashed rgba(255, 255, 255, 0.7);
+     z-index: 2;
+     font-size: 12px;
+     margin: 0;
+ }
+
  .videoView p.datetime,
  .classifyOnClick p.datetime {
      position: absolute;
      padding: 5px;
-     background-color: rgba(0, 111, 255, 0.85);
+     background-color: rgba(0, 111, 0, 0.85);
      color: #FFF;
      border: 1px solid rgba(255, 255, 255, 0.7);
      z-index: 2;
@@ -79,12 +103,27 @@
  }
 
  .highlighter {
-     background: rgba(0, 255, 0, 0.25);
+     background: rgba(127, 127, 127, 0.15);
      border: 1px dashed #fff;
      z-index: 1;
      position: absolute;
  }
-/*
+
+ .on_highlighter {
+     background: rgba(127, 127, 127, 0.2);
+     border: thick double #f00;
+     z-index: 1;
+     position: absolute;
+ }
+
+ .off_highlighter {
+     background: rgba(127, 127, 127, 0.2);
+     border: 1px solid #00f;
+     z-index: 1;
+     position: absolute;
+ }
+
+ /*
  .ledlight {
     background: rgba(0, 229, 255, 0.25);
     border: 1px dashed #fff;

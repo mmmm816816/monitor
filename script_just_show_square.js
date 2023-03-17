@@ -70,7 +70,7 @@ function predictWebcam() {
         const pp = document.createElement('p');
         pp.setAttribute('class', 'datetime');
         let d = new Date();
-        pp.innerText = d.toLocaleTimeString().split(' ')[0] + '.' + d.getMilliseconds();
+        pp.innerText = d.toLocaleTimeString().split(' ')[0]+'.'+d.getMilliseconds();
         pp.style = 'left: 0px;' + 'top: 0px;';
         liveView.appendChild(pp);
         children.push(pp);
@@ -82,11 +82,7 @@ function predictWebcam() {
             if (predictions[n].score > 0.60 && predictions[n].class == 'tv') { // 'person' 'tv' // https://tech.amikelive.com/node-718/what-object-categories-labels-are-in-coco-dataset/
                 num_obj += 1
                 // console.log(predictions[n].class)
-
-                const onoffFlag = displayCanvas(predictions[n], num_obj);
-
                 const p = document.createElement('p');
-                p.setAttribute('class', onoffFlag?'on':'off');
                 p.innerText = num_obj + ' - ' + Math.round(parseFloat(predictions[n].score) * 100) + '% confidence.';
                 p.style = 'left: ' + predictions[n].bbox[0] + 'px;' +
                     'top: ' + predictions[n].bbox[1] + 'px;' +
@@ -94,7 +90,6 @@ function predictWebcam() {
 
                 const highlighter = document.createElement('div');
                 highlighter.setAttribute('class', 'highlighter');
-                // highlighter.setAttribute('class', onoffFlag?'on_highlighter':'off_highlighter');
                 highlighter.style = 'left: '
                     + predictions[n].bbox[0] + 'px; top: '
                     + predictions[n].bbox[1] + 'px; width: '
@@ -103,6 +98,9 @@ function predictWebcam() {
 
                 liveView.appendChild(highlighter);
                 liveView.appendChild(p);
+
+                prediction = predictions[n];
+                displayCanvas(prediction, num_obj);
 
                 children.push(highlighter);
                 children.push(p);
@@ -120,9 +118,9 @@ function displayCanvas(prediction, num_obj) {
     canvas.width = Math.floor(prediction.bbox[2]);
     canvas.height = Math.floor(prediction.bbox[3]);
     let ctx = canvas.getContext(
-        "2d",
-        {
-            willReadFrequently: true
+        "2d", 
+        { 
+            willReadFrequently: true 
         }
     ); // Canvas2D: Multiple readback operations using getImageData are faster with the willReadFrequently attribute set to true warnings
     ctx.drawImage(
@@ -154,13 +152,12 @@ function displayCanvas(prediction, num_obj) {
         let g = frame.data[i * 4 + 1];
         let b = frame.data[i * 4 + 2];
         if (r <= 63 && g <= 63 && b <= 63) { // (r <= 127 && g <= 127 && b <= 127): darker than gray, no lighter r/g/b
-            // if (r <= 63) {
+        // if (r <= 63) {
             // frame.data[i * 4 + 3] = 0; // opacity = zero
             num -= 1;
         }
     }
     // ctx.putImageData(frame, 0, 0);
     // cvs.append(canvas);
-    cnt.innerText += '\n' + num_obj + '\n' + (num) + '/' + l + '(' + Math.round((num) / l * 1000) / 10 + ' %)';
-    return num / l > 0.4 ? true : false;
+    cnt.innerText += '\n' + num_obj + '\n' + (num) + '/' + l + '(' + Math.round((num)/l*1000)/10 +' %)';
 }
